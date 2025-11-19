@@ -32,14 +32,14 @@ class MobileMetricCard extends StatelessWidget {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 12.sp,
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 14.sp,
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
               Container(
-                width: 8.w,
-                height: 8.w,
+                width: 10.w,
+                height: 10.w,
                 decoration: BoxDecoration(
                   color: color,
                   shape: BoxShape.circle,
@@ -47,37 +47,33 @@ class MobileMetricCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 8.h),
-          Text(
-            count.toString(),
-            style: TextStyle(
-              fontSize: 24.sp,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
-          ),
-          SizedBox(height: 4.h),
-          Row(
+          SizedBox(height: 16.h),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                isPositive ? Icons.arrow_upward : Icons.arrow_downward,
-                size: 12.sp,
-                color: isPositive ? AppColors.success : AppColors.error,
+              Row(
+                children: [
+                  Icon(
+                    isPositive ? Icons.arrow_upward : Icons.arrow_downward,
+                    size: 12.sp,
+                    color: isPositive ? AppColors.success : AppColors.error,
+                  ),
+                  SizedBox(width: 4.w),
+                  Text(
+                    '${change.abs().toStringAsFixed(2)}%',
+                    style: TextStyle(
+                      fontSize: 11.sp,
+                      color: isPositive ? AppColors.success : AppColors.error,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(width: 4.w),
-              Text(
-                '${change.abs().toStringAsFixed(2)}%',
-                style: TextStyle(
-                  fontSize: 10.sp,
-                  color: isPositive ? AppColors.success : AppColors.error,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(width: 4.w),
+              SizedBox(height: 2.h),
               Text(
                 'From last quarter',
                 style: TextStyle(
-                  fontSize: 10.sp,
+                  fontSize: 9.sp,
                   color: AppColors.textTertiary,
                 ),
               ),

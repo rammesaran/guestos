@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
+
 import 'package:guestos/presentation/screens/dashboard/dashboard_tab/dashboard_model.dart';
+import 'package:guestos/core/widgets/glass_container.dart';
 
 class TodosList extends StatelessWidget {
   final List<TodoItemData> todos;
   final VoidCallback? onAddTodos;
 
   const TodosList({Key? key, required this.todos, this.onAddTodos})
-    : super(key: key);
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GlassContainer(
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
-      ),
+      borderRadius: BorderRadius.circular(20),
+      blurIntensity: 15.0,
+      opacity: 0.15,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -34,33 +35,45 @@ class TodosList extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: onAddTodos,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF4FC3F7).withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: const Color(0xFF4FC3F7)),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.add_circle_outline,
-                        color: Color(0xFF4FC3F7),
-                        size: 16,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
                       ),
-                      const SizedBox(width: 6),
-                      const Text(
-                        'Add To-Dos',
-                        style: TextStyle(
-                          color: Color(0xFF4FC3F7),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color(0xFF4FC3F7).withOpacity(0.3),
+                            const Color(0xFF4FC3F7).withOpacity(0.15),
+                          ],
                         ),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            color: const Color(0xFF4FC3F7).withOpacity(0.6)),
                       ),
-                    ],
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.add_circle_outline,
+                            color: Color(0xFF4FC3F7),
+                            size: 16,
+                          ),
+                          const SizedBox(width: 6),
+                          const Text(
+                            'Add To-Dos',
+                            style: TextStyle(
+                              color: Color(0xFF4FC3F7),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -78,83 +91,99 @@ class TodosList extends StatelessWidget {
   Widget _buildTodoItem(TodoItemData todo) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: todo.isCompleted
-            ? const Color(0xFF66BB6A).withOpacity(0.1)
-            : Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: todo.isCompleted
-              ? const Color(0xFF66BB6A).withOpacity(0.3)
-              : Colors.white.withOpacity(0.1),
-        ),
-      ),
-      child: Row(
-        children: [
-          // Checkbox
-          Container(
-            width: 20,
-            height: 20,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+          child: Container(
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: todo.isCompleted
-                  ? const Color(0xFF66BB6A)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(4),
+              gradient: LinearGradient(
+                colors: todo.isCompleted
+                    ? [
+                        const Color(0xFF66BB6A).withOpacity(0.25),
+                        const Color(0xFF66BB6A).withOpacity(0.10),
+                      ]
+                    : [
+                        Colors.white.withOpacity(0.15),
+                        Colors.white.withOpacity(0.05),
+                      ],
+              ),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: todo.isCompleted
-                    ? const Color(0xFF66BB6A)
-                    : Colors.white.withOpacity(0.4),
-                width: 2,
+                    ? const Color(0xFF66BB6A).withOpacity(0.4)
+                    : Colors.white.withOpacity(0.2),
               ),
             ),
-            child: todo.isCompleted
-                ? const Icon(Icons.check, color: Colors.white, size: 14)
-                : null,
-          ),
-          const SizedBox(width: 12),
-
-          // Content
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                Text(
-                  todo.date,
-                  style: TextStyle(
+                // Checkbox
+                Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
                     color: todo.isCompleted
                         ? const Color(0xFF66BB6A)
-                        : const Color(0xFF4FC3F7),
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(
+                      color: todo.isCompleted
+                          ? const Color(0xFF66BB6A)
+                          : Colors.white.withOpacity(0.4),
+                      width: 2,
+                    ),
+                  ),
+                  child: todo.isCompleted
+                      ? const Icon(Icons.check, color: Colors.white, size: 14)
+                      : null,
+                ),
+                const SizedBox(width: 12),
+
+                // Content
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        todo.date,
+                        style: TextStyle(
+                          color: todo.isCompleted
+                              ? const Color(0xFF66BB6A)
+                              : const Color(0xFF4FC3F7),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        todo.title,
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.9),
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          decoration: todo.isCompleted
+                              ? TextDecoration.lineThrough
+                              : null,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  todo.title,
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.9),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    decoration: todo.isCompleted
-                        ? TextDecoration.lineThrough
-                        : null,
+
+                // Menu Button
+                if (todo.hasMenu)
+                  Icon(
+                    Icons.more_vert,
+                    color: Colors.white.withOpacity(0.5),
+                    size: 18,
                   ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
               ],
             ),
           ),
-
-          // Menu Button
-          if (todo.hasMenu)
-            Icon(
-              Icons.more_vert,
-              color: Colors.white.withOpacity(0.5),
-              size: 18,
-            ),
-        ],
+        ),
       ),
     );
   }

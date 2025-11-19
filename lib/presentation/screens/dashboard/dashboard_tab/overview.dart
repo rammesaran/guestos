@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:guestos/presentation/screens/dashboard/dashboard_tab/dashboard_model.dart';
+import 'package:guestos/core/widgets/glass_container.dart';
 
 class OverviewChart extends StatelessWidget {
   final List<OverviewDataPoint> data;
@@ -21,13 +23,11 @@ class OverviewChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GlassContainer(
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
-      ),
+      borderRadius: BorderRadius.circular(20),
+      blurIntensity: 15.0,
+      opacity: 0.15,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -45,17 +45,23 @@ class OverviewChart extends StatelessWidget {
               ),
               Row(
                 children: [
-                  _buildDropdown(selectedView, [
-                    'Rocks',
-                    'To-Dos',
-                    'Fires',
-                  ], onViewChanged),
+                  _buildDropdown(
+                      selectedView,
+                      [
+                        'Rocks',
+                        'To-Dos',
+                        'Fires',
+                      ],
+                      onViewChanged),
                   const SizedBox(width: 12),
-                  _buildDropdown(selectedPeriod, [
-                    'Quarterly',
-                    'Monthly',
-                    'Yearly',
-                  ], onPeriodChanged),
+                  _buildDropdown(
+                      selectedPeriod,
+                      [
+                        'Quarterly',
+                        'Monthly',
+                        'Yearly',
+                      ],
+                      onPeriodChanged),
                   const SizedBox(width: 12),
                   _buildIconButton(Icons.download),
                 ],
@@ -95,46 +101,68 @@ class OverviewChart extends StatelessWidget {
     List<String> items,
     Function(String) onChanged,
   ) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
-      ),
-      child: DropdownButton<String>(
-        value: value,
-        dropdownColor: const Color(0xFF1A4F66),
-        underline: const SizedBox(),
-        icon: const Icon(
-          Icons.keyboard_arrow_down,
-          color: Colors.white,
-          size: 18,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.white.withOpacity(0.25),
+                Colors.white.withOpacity(0.10),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.white.withOpacity(0.3)),
+          ),
+          child: DropdownButton<String>(
+            value: value,
+            dropdownColor: const Color(0xFF1A4F66),
+            underline: const SizedBox(),
+            icon: const Icon(
+              Icons.keyboard_arrow_down,
+              color: Colors.white,
+              size: 18,
+            ),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+            items: items
+                .map((item) => DropdownMenuItem(value: item, child: Text(item)))
+                .toList(),
+            onChanged: (val) {
+              if (val != null) onChanged(val);
+            },
+          ),
         ),
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 13,
-          fontWeight: FontWeight.w500,
-        ),
-        items: items
-            .map((item) => DropdownMenuItem(value: item, child: Text(item)))
-            .toList(),
-        onChanged: (val) {
-          if (val != null) onChanged(val);
-        },
       ),
     );
   }
 
   Widget _buildIconButton(IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.white.withOpacity(0.25),
+                Colors.white.withOpacity(0.10),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.white.withOpacity(0.3)),
+          ),
+          child: Icon(icon, color: Colors.white, size: 18),
+        ),
       ),
-      child: Icon(icon, color: Colors.white, size: 18),
     );
   }
 

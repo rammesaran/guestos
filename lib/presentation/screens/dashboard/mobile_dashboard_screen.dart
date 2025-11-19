@@ -13,6 +13,7 @@ import 'widgets/mobile_meeting_card.dart';
 import 'widgets/mobile_overview_card.dart';
 import 'widgets/mobile_todo_card.dart';
 import 'widgets/mobile_pie_chart.dart';
+import 'bottomnavigation.dart';
 
 class MobileDashboardScreen extends StatelessWidget {
   const MobileDashboardScreen({Key? key}) : super(key: key);
@@ -27,8 +28,15 @@ class MobileDashboardScreen extends StatelessWidget {
   }
 }
 
-class _MobileDashboardView extends StatelessWidget {
+class _MobileDashboardView extends StatefulWidget {
   const _MobileDashboardView({Key? key}) : super(key: key);
+
+  @override
+  State<_MobileDashboardView> createState() => _MobileDashboardViewState();
+}
+
+class _MobileDashboardViewState extends State<_MobileDashboardView> {
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +77,14 @@ class _MobileDashboardView extends StatelessWidget {
             },
           ),
         ),
+      ),
+      bottomNavigationBar: CustomBottomNavigation(
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
       ),
     );
   }
@@ -340,62 +356,123 @@ class _LoadedView extends StatelessWidget {
   }
 
   Widget _buildTodoSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'To-Do',
-              style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                // Navigate to all todos
-              },
-              child: Text(
-                'View All To-Do',
+    return GlassContainer(
+      borderRadius: BorderRadius.circular(24.r),
+      padding: EdgeInsets.all(20.w),
+      blurIntensity: 15.0,
+      gradientColors: [
+        Colors.white.withOpacity(0.3),
+        Colors.white.withOpacity(0.15),
+        Colors.white.withOpacity(0.05),
+      ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'To-Do',
                 style: TextStyle(
-                  fontSize: 12.sp,
-                  color: AppColors.textSecondary,
-                  decoration: TextDecoration.underline,
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
                 ),
               ),
+              GestureDetector(
+                onTap: () {
+                  // Navigate to all todos
+                },
+                child: Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(
+                      color: AppColors.glassBorder,
+                      width: 1,
+                    ),
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.white.withOpacity(0.2),
+                        Colors.white.withOpacity(0.1),
+                      ],
+                    ),
+                  ),
+                  child: Text(
+                    'View All To-Do',
+                    style: TextStyle(
+                      fontSize: 11.sp,
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 20.h),
+
+          // Chart Section with enhanced glass effect
+          Container(
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.r),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withOpacity(0.25),
+                  Colors.white.withOpacity(0.1),
+                  Colors.white.withOpacity(0.05),
+                ],
+              ),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.3),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
+              ],
             ),
-          ],
-        ),
-        SizedBox(height: 16.h),
-        MobilePieChart(
-          data: _getTodoChartData(),
-        ),
-        SizedBox(height: 16.h),
-        // Todo List
-        ...dashboard.todos
-            .take(3)
-            .map((todo) => Padding(
-                  padding: EdgeInsets.only(bottom: 8.h),
-                  child: MobileTodoCard(todo: todo),
-                ))
-            .toList(),
-      ],
+            child: MobilePieChart(
+              data: _getTodoChartData(),
+            ),
+          ),
+
+          SizedBox(height: 20.h),
+
+          // Todo List with enhanced cards
+          ...dashboard.todos
+              .take(3)
+              .map((todo) => Padding(
+                    padding: EdgeInsets.only(bottom: 12.h),
+                    child: MobileTodoCard(todo: todo),
+                  ))
+              .toList(),
+        ],
+      ),
     );
   }
 
   Widget _buildFireRocksSection() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: Column(
+      child: Row(
         children: [
           // Fire Section
-          _buildFireCard(),
-          SizedBox(height: 16.h),
+          Expanded(
+            child: _buildFireCard(),
+          ),
+          SizedBox(width: 12.w),
           // Rocks Section
-          _buildRocksCard(),
+          Expanded(
+            child: _buildRocksCard(),
+          ),
         ],
       ),
     );
@@ -403,22 +480,36 @@ class _LoadedView extends StatelessWidget {
 
   Widget _buildFireCard() {
     return GlassCard(
+      padding: EdgeInsets.all(16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Fire',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Fire',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              Container(
+                width: 8.w,
+                height: 8.w,
+                decoration: BoxDecoration(
+                  color: AppColors.chartOrange,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 12.h),
           Text(
-            'Identify and organize pressing issues to resolve them with ease.',
+            'Pressing issues to resolve',
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: 10.sp,
               color: AppColors.textSecondary,
             ),
           ),
@@ -426,22 +517,48 @@ class _LoadedView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '47.5%',
-                style: TextStyle(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '47.5%',
+                    style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    'Completion',
+                    style: TextStyle(
+                      fontSize: 9.sp,
+                      color: AppColors.textTertiary,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
-                width: 60.w,
-                height: 60.w,
-                child: CircularProgressIndicator(
-                  value: 0.475,
-                  strokeWidth: 6.w,
-                  backgroundColor: AppColors.surfaceSecondary,
-                  color: AppColors.chartBlue,
+                width: 40.w,
+                height: 40.w,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      value: 0.475,
+                      strokeWidth: 4.w,
+                      backgroundColor: AppColors.surfaceSecondary,
+                      color: AppColors.chartOrange,
+                    ),
+                    Text(
+                      '48%',
+                      style: TextStyle(
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -453,22 +570,36 @@ class _LoadedView extends StatelessWidget {
 
   Widget _buildRocksCard() {
     return GlassCard(
+      padding: EdgeInsets.all(16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Rocks',
-            style: TextStyle(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Rocks',
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              Container(
+                width: 8.w,
+                height: 8.w,
+                decoration: BoxDecoration(
+                  color: AppColors.chartYellow,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 12.h),
           Text(
-            'Set and track quarterly goals to help your team consistently hit their targets.',
+            'Quarterly goals tracking',
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: 10.sp,
               color: AppColors.textSecondary,
             ),
           ),
@@ -476,22 +607,48 @@ class _LoadedView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '47.5%',
-                style: TextStyle(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '75.2%',
+                    style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    'Completion',
+                    style: TextStyle(
+                      fontSize: 9.sp,
+                      color: AppColors.textTertiary,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
-                width: 60.w,
-                height: 60.w,
-                child: CircularProgressIndicator(
-                  value: 0.475,
-                  strokeWidth: 6.w,
-                  backgroundColor: AppColors.surfaceSecondary,
-                  color: AppColors.chartYellow,
+                width: 40.w,
+                height: 40.w,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      value: 0.752,
+                      strokeWidth: 4.w,
+                      backgroundColor: AppColors.surfaceSecondary,
+                      color: AppColors.chartYellow,
+                    ),
+                    Text(
+                      '75%',
+                      style: TextStyle(
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
