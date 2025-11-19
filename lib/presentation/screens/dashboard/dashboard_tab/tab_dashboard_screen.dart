@@ -72,7 +72,7 @@ class _TabletDashboardScreenState extends State<TabletDashboardScreen> {
                   _buildHeader(),
                   const SizedBox(height: 24),
 
-                  // Top Metrics Row
+                  // Top Metrics Row - MEETINGS CARD REMOVED
                   Row(
                     children: [
                       Expanded(
@@ -107,13 +107,7 @@ class _TabletDashboardScreenState extends State<TabletDashboardScreen> {
                           color: const Color(0xFFFF5252),
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: MeetingsSummaryCard(
-                          meetings: widget.data.upcomingMeetings,
-                          onCreateMeeting: widget.onCreateMeeting,
-                        ),
-                      ),
+                      // MeetingsSummaryCard REMOVED - meetings info is in the right panel
                     ],
                   ),
                   const SizedBox(height: 24),
@@ -250,132 +244,5 @@ class _TabletDashboardScreenState extends State<TabletDashboardScreen> {
   }
 }
 
-/// Meetings Summary Card Widget (for top metrics row)
-class MeetingsSummaryCard extends StatelessWidget {
-  final List<Meeting> meetings;
-  final VoidCallback? onCreateMeeting;
-
-  const MeetingsSummaryCard({
-    Key? key,
-    required this.meetings,
-    this.onCreateMeeting,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final upcomingCount = meetings.where((m) => !m.isCompleted).length;
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Meetings',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              GestureDetector(
-                onTap: onCreateMeeting,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF4FC3F7).withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: const Color(0xFF4FC3F7)),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.add, color: Color(0xFF4FC3F7), size: 14),
-                      const SizedBox(width: 4),
-                      Text(
-                        'Create Meeting',
-                        style: TextStyle(
-                          color: const Color(0xFF4FC3F7),
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            upcomingCount.toString(),
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 40,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              ...meetings.take(5).map((meeting) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: CircleAvatar(
-                    radius: 16,
-                    backgroundColor: _getAvatarColor(meeting.type),
-                    child: Icon(
-                      _getMeetingIcon(meeting.type),
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Color _getAvatarColor(String type) {
-    switch (type.toLowerCase()) {
-      case 'video':
-        return const Color(0xFF9C27B0);
-      case 'audio':
-        return const Color(0xFF4CAF50);
-      case 'team':
-        return const Color(0xFFFFA726);
-      case 'call':
-        return const Color(0xFFFFB300);
-      default:
-        return const Color(0xFF42A5F5);
-    }
-  }
-
-  IconData _getMeetingIcon(String type) {
-    switch (type.toLowerCase()) {
-      case 'video':
-        return Icons.videocam;
-      case 'audio':
-        return Icons.mic;
-      case 'team':
-        return Icons.groups;
-      case 'call':
-        return Icons.phone;
-      default:
-        return Icons.event;
-    }
-  }
-}
+// Note: MeetingsSummaryCard class removed as it's no longer needed in the metrics row
+// Meeting information is now only displayed in the right sidebar MeetingsPanel

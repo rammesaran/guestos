@@ -31,18 +31,25 @@ class OverviewChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
+          // Header - Fixed to match mockup
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Overview',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
+              // Left side - Title with Avatars
+              Row(
+                children: [
+                  const Text(
+                    'Overview',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                ],
               ),
+              // Right side - Controls
               Row(
                 children: [
                   _buildDropdown(
@@ -84,12 +91,86 @@ class OverviewChart extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildLegendItem('Task Assigned', const Color(0xFF4FC3F7)),
+              _buildLegendItem('Task Assigned', const Color(0xFFFFA726)),
               const SizedBox(width: 24),
-              _buildLegendItem('Overdue', const Color(0xFF5C6BC0)),
+              _buildLegendItem('Overdue', const Color(0xFF7A9FAD)),
               const SizedBox(width: 24),
-              _buildLegendItem('Completed', const Color(0xFF66BB6A)),
+              _buildLegendItem('Completed', const Color(0xFF4FC3F7)),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Avatar Stack Widget - Matching mockup design
+  Widget _buildAvatarStack() {
+    return SizedBox(
+      width: 80,
+      height: 40,
+      child: Stack(
+        children: [
+          // First avatar with 'G' initial
+          Positioned(
+            left: 0,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFF5A7C8A),
+                border: Border.all(
+                  color: const Color(0xFF0D3B52),
+                  width: 2.5,
+                ),
+              ),
+              child: const Center(
+                child: Text(
+                  'G',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          // Second avatar with icon/logo
+          Positioned(
+            left: 30,
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                border: Border.all(
+                  color: const Color(0xFF0D3B52),
+                  width: 2.5,
+                ),
+              ),
+              child: Center(
+                child: Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'B',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -193,31 +274,48 @@ class BarChartPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (data.isEmpty) return;
 
-    final maxValue = data.fold<double>(0, (max, point) {
-      final pointMax = math.max(
-        point.taskAssigned,
-        math.max(point.overdue, point.completed),
-      );
-      return math.max(max, pointMax);
-    });
+    // Calculate max value including negative values for proper scaling
+    double maxPositive = 0;
+    double maxNegative = 0;
 
-    final barWidth = size.width / (data.length * 3.5);
+    for (var point in data) {
+      maxPositive = math.max(maxPositive, point.taskAssigned);
+      maxPositive = math.max(maxPositive, point.completed);
+      maxNegative = math.min(maxNegative, -point.overdue);
+    }
+
+    final maxValue = math.max(maxPositive, maxNegative.abs());
+    final barWidth = (size.width / data.length) * 0.25;
     final chartHeight = size.height - 40;
-    final spacing = barWidth * 0.3;
+    final zeroY = chartHeight / 2; // Middle line for zero
+    final spacing = barWidth * 0.15;
 
     // Draw Y-axis labels and grid lines
     final yAxisPaint = Paint()
-      ..color = Colors.white.withOpacity(0.1)
+      ..color = Colors.white.withOpacity(0.08)
       ..strokeWidth = 1;
 
     final yAxisTextPainter = TextPainter(textDirection: TextDirection.ltr);
 
-    for (int i = 0; i <= 4; i++) {
-      final y = chartHeight - (i * chartHeight / 4);
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), yAxisPaint);
+    // Draw horizontal grid lines (from 200 to -200)
+    for (int i = -4; i <= 4; i++) {
+      final y = zeroY - (i * chartHeight / 8);
+
+      // Stronger line at zero
+      if (i == 0) {
+        canvas.drawLine(
+          Offset(0, y),
+          Offset(size.width, y),
+          Paint()
+            ..color = Colors.white.withOpacity(0.15)
+            ..strokeWidth = 1.5,
+        );
+      } else {
+        canvas.drawLine(Offset(0, y), Offset(size.width, y), yAxisPaint);
+      }
 
       // Y-axis labels
-      final value = (maxValue * i / 4).round();
+      final value = (50 * i).round();
       yAxisTextPainter.text = TextSpan(
         text: value.toString(),
         style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 10),
@@ -225,78 +323,96 @@ class BarChartPainter extends CustomPainter {
       yAxisTextPainter.layout();
       yAxisTextPainter.paint(
         canvas,
-        Offset(-30, y - yAxisTextPainter.height / 2),
+        Offset(-35, y - yAxisTextPainter.height / 2),
       );
     }
 
-    // Draw bars
+    // Draw bars for each data point
     for (int i = 0; i < data.length; i++) {
       final point = data[i];
-      final x = i * (barWidth * 3 + spacing * 4) + spacing;
+      final centerX = (i + 0.5) * (size.width / data.length);
+      final x = centerX - (barWidth * 1.5 + spacing);
 
+      // Draw Task Assigned (Orange) - positive
       _drawBar(
         canvas,
         x,
-        chartHeight,
+        zeroY,
         barWidth,
         point.taskAssigned,
         maxValue,
-        const Color(0xFF4FC3F7),
+        chartHeight / 2,
+        const Color(0xFFFFA726),
+        isPositive: true,
       );
 
+      // Draw Overdue (Gray-blue) - negative
       _drawBar(
         canvas,
         x + barWidth + spacing,
-        chartHeight,
+        zeroY,
         barWidth,
         point.overdue,
         maxValue,
-        const Color(0xFF5C6BC0),
+        chartHeight / 2,
+        const Color(0xFF7A9FAD),
+        isPositive: false,
       );
 
+      // Draw Completed (Cyan) - positive
       _drawBar(
         canvas,
         x + (barWidth + spacing) * 2,
-        chartHeight,
+        zeroY,
         barWidth,
         point.completed,
         maxValue,
-        const Color(0xFF66BB6A),
+        chartHeight / 2,
+        const Color(0xFF4FC3F7),
+        isPositive: true,
       );
 
       // X-axis labels
       final labelPainter = TextPainter(
         text: TextSpan(
           text: point.label,
-          style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 10),
+          style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 9),
         ),
         textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
       );
       labelPainter.layout();
       labelPainter.paint(
         canvas,
         Offset(
-          x + (barWidth * 1.5) - (labelPainter.width / 2),
+          centerX - (labelPainter.width / 2),
           chartHeight + 10,
         ),
       );
     }
   }
 
-  void _drawBar(
-    Canvas canvas,
-    double x,
-    double chartHeight,
-    double width,
-    double value,
-    double maxValue,
-    Color color,
-  ) {
-    final barHeight = (value / maxValue) * chartHeight;
-    final rect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(x, chartHeight - barHeight, width, barHeight),
-      const Radius.circular(4),
-    );
+  void _drawBar(Canvas canvas, double x, double zeroY, double width,
+      double value, double maxValue, double maxHeight, Color color,
+      {required bool isPositive}) {
+    if (value == 0) return;
+
+    final barHeight = (value.abs() / maxValue) * maxHeight;
+
+    RRect rect;
+    if (isPositive) {
+      // Positive bars grow upward from zero line
+      rect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(x, zeroY - barHeight, width, barHeight),
+        const Radius.circular(3),
+      );
+    } else {
+      // Negative bars grow downward from zero line
+      rect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(x, zeroY, width, barHeight),
+        const Radius.circular(3),
+      );
+    }
 
     final paint = Paint()
       ..color = color
