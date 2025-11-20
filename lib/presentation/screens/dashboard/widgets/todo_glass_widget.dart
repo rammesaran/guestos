@@ -47,7 +47,7 @@ class TodoGlassWidget extends StatelessWidget {
                     const Text(
                       'To-Do',
                       style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 32,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
@@ -57,13 +57,13 @@ class TodoGlassWidget extends StatelessWidget {
                         Icon(
                           Icons.visibility_outlined,
                           color: Colors.white.withOpacity(0.9),
-                          size: 20,
+                          size: 24,
                         ),
-                        const SizedBox(width: 6),
+                        const SizedBox(width: 8),
                         Text(
                           'View All To-Do',
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 17,
                             color: Colors.white.withOpacity(0.9),
                             fontWeight: FontWeight.w400,
                           ),
@@ -72,18 +72,18 @@ class TodoGlassWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 40),
 
                 // Pie Chart and Legend
                 Row(
                   children: [
                     // Pie Chart
                     SizedBox(
-                      width: 200,
-                      height: 200,
+                      width: 250,
+                      height: 250,
                       child: CustomPaint(painter: PieChartPainter()),
                     ),
-                    const SizedBox(width: 40),
+                    const SizedBox(width: 50),
 
                     // Legend
                     Expanded(
@@ -91,9 +91,9 @@ class TodoGlassWidget extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildLegendItem(Colors.green, 'Completed', false),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 25),
                           _buildLegendItem(Colors.orange, 'In Progress', true),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 25),
                           _buildLegendItem(
                             const Color(0xFF4DBFDB),
                             'Yet to Start',
@@ -104,7 +104,7 @@ class TodoGlassWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 40),
 
                 // Pending To-Do's Section
                 Row(
@@ -113,7 +113,7 @@ class TodoGlassWidget extends StatelessWidget {
                     const Text(
                       'Pending To-Do',
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 24,
                         fontWeight: FontWeight.w500,
                         color: Colors.white,
                       ),
@@ -121,7 +121,7 @@ class TodoGlassWidget extends StatelessWidget {
                     Text(
                       'View Details',
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 17,
                         color: Colors.white.withOpacity(0.9),
                         decoration: TextDecoration.underline,
                         decorationColor: Colors.white.withOpacity(0.9),
@@ -129,13 +129,13 @@ class TodoGlassWidget extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
                 // Todo Items
                 _buildTodoItem('ABD Assessm...', 'Sep 30'),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 _buildTodoItem('ABD Assessm...', 'Sep 30'),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 _buildTodoItem('ABD Assessm...', 'Sep 30'),
               ],
             ),
@@ -149,18 +149,18 @@ class TodoGlassWidget extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 16,
-          height: 16,
+          width: 20,
+          height: 20,
           decoration: BoxDecoration(
             color: color,
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(5),
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 12),
         if (hasButton)
           Container(
-            width: 28,
-            height: 28,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
               color: Colors.orange,
               shape: BoxShape.circle,
@@ -172,15 +172,18 @@ class TodoGlassWidget extends StatelessWidget {
                 ),
               ],
             ),
-            child: const Icon(Icons.add, color: Colors.white, size: 18),
+            child: const Icon(Icons.add, color: Colors.white, size: 20),
           ),
-        if (hasButton) const SizedBox(width: 8),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Colors.white,
-            fontWeight: FontWeight.w400,
+        if (hasButton) const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 18,
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],
@@ -190,34 +193,37 @@ class TodoGlassWidget extends StatelessWidget {
   Widget _buildTodoItem(String title, String dueDate) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         color: Colors.white.withOpacity(0.15),
         border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Title',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.white.withOpacity(0.7),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Title',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white.withOpacity(0.7),
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
+                const SizedBox(height: 6),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Row(
             children: [
@@ -227,26 +233,27 @@ class TodoGlassWidget extends StatelessWidget {
                   Text(
                     'Due by',
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 14,
                       color: Colors.white.withOpacity(0.7),
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 6),
                   Text(
                     dueDate,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 18,
                       color: Colors.white,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 20),
               Icon(
                 Icons.arrow_forward,
                 color: Colors.white.withOpacity(0.7),
-                size: 20,
+                size: 24,
               ),
             ],
           ),
