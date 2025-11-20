@@ -8,10 +8,8 @@ import '../../../../domain/entities/dashboard_entity.dart';
 class MobileOverviewCard extends StatelessWidget {
   final OverviewEntity overview;
 
-  const MobileOverviewCard({
-    Key? key,
-    required this.overview,
-  }) : super(key: key);
+  const MobileOverviewCard({Key? key, required this.overview})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +53,6 @@ class MobileOverviewCard extends StatelessWidget {
           ),
           SizedBox(height: 16.h),
           _buildProgressBars(),
-          SizedBox(height: 16.h),
-          _buildChart(),
         ],
       ),
     );
@@ -66,13 +62,22 @@ class MobileOverviewCard extends StatelessWidget {
     return Column(
       children: [
         _buildProgressBar(
-            'Rocks', overview.stats.completedPercentage, AppColors.chartYellow),
+          'Rocks',
+          overview.stats.completedPercentage,
+          AppColors.chartYellow,
+        ),
         SizedBox(height: 8.h),
         _buildProgressBar(
-            'Fires', overview.stats.inProgressPercentage, AppColors.chartBlue),
+          'Fires',
+          overview.stats.inProgressPercentage,
+          AppColors.chartBlue,
+        ),
         SizedBox(height: 8.h),
         _buildProgressBar(
-            'To-Do', overview.stats.yetToStartPercentage, AppColors.chartGreen),
+          'To-Do',
+          overview.stats.yetToStartPercentage,
+          AppColors.chartGreen,
+        ),
       ],
     );
   }
@@ -84,10 +89,7 @@ class MobileOverviewCard extends StatelessWidget {
           width: 40.w,
           child: Text(
             label,
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 12.sp, color: AppColors.textSecondary),
           ),
         ),
         SizedBox(width: 12.w),

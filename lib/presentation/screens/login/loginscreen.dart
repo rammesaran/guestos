@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/utils/navigation_helper.dart';
 
 class LoginScreen extends StatefulWidget {
   final Function(String username, String password)? onLogin;
@@ -46,6 +47,9 @@ class _LoginScreenState extends State<LoginScreen> {
       _isOtpMode = !_isOtpMode;
       _formKey.currentState?.reset();
     });
+
+    // Navigate to dashboard based on device type (mobile or tablet)
+    NavigationHelper.navigateToDashboard(context, replace: true);
   }
 
   Future<void> _handleLogin() async {
@@ -53,15 +57,33 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() => _isLoading = true);
 
       try {
+        // Simulate login process
         if (_isOtpMode) {
+          // Call external login callback if provided
           await widget.onOtpLogin?.call(
             _emailPhoneController.text.trim(),
             _otpController.text.trim(),
           );
         } else {
+          // Call external login callback if provided
           await widget.onLogin?.call(
             _usernameController.text.trim(),
             _passwordController.text.trim(),
+          );
+        }
+
+        // Navigate to appropriate dashboard based on device type
+        if (mounted) {
+          await NavigationHelper.navigateToDashboard(context, replace: true);
+        }
+      } catch (e) {
+        // Handle login errors
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Login failed: ${e.toString()}'),
+              backgroundColor: Colors.red,
+            ),
           );
         }
       } finally {

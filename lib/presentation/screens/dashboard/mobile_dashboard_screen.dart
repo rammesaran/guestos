@@ -57,9 +57,9 @@ class _MobileDashboardViewState extends State<_MobileDashboardView> {
                 color: AppColors.textPrimary,
                 backgroundColor: AppColors.surfacePrimary,
                 onRefresh: () async {
-                  context
-                      .read<DashboardBloc>()
-                      .add(const DashboardEvent.refreshDashboard());
+                  context.read<DashboardBloc>().add(
+                    const DashboardEvent.refreshDashboard(),
+                  );
                 },
                 child: state.when(
                   initial: () => const _LoadingView(),
@@ -68,10 +68,8 @@ class _MobileDashboardViewState extends State<_MobileDashboardView> {
                     dashboard: dashboard,
                     isRefreshing: isRefreshing,
                   ),
-                  error: (failure, lastDashboard) => _ErrorView(
-                    error: "",
-                    lastDashboard: lastDashboard,
-                  ),
+                  error: (failure, lastDashboard) =>
+                      _ErrorView(error: "", lastDashboard: lastDashboard),
                 ),
               );
             },
@@ -96,9 +94,7 @@ class _LoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: CircularProgressIndicator(
-        color: AppColors.textPrimary,
-      ),
+      child: CircularProgressIndicator(color: AppColors.textPrimary),
     );
   }
 }
@@ -107,11 +103,8 @@ class _ErrorView extends StatelessWidget {
   final String error;
   final DashboardEntity? lastDashboard;
 
-  const _ErrorView({
-    Key? key,
-    required this.error,
-    this.lastDashboard,
-  }) : super(key: key);
+  const _ErrorView({Key? key, required this.error, this.lastDashboard})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -123,11 +116,7 @@ class _ErrorView extends StatelessWidget {
             child: GlassCard(
               child: Column(
                 children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 48.w,
-                    color: AppColors.error,
-                  ),
+                  Icon(Icons.error_outline, size: 48.w, color: AppColors.error),
                   SizedBox(height: 16.h),
                   Text(
                     'Something went wrong',
@@ -149,9 +138,9 @@ class _ErrorView extends StatelessWidget {
                   SizedBox(height: 16.h),
                   GlassButton(
                     onPressed: () {
-                      context
-                          .read<DashboardBloc>()
-                          .add(const DashboardEvent.loadDashboard());
+                      context.read<DashboardBloc>().add(
+                        const DashboardEvent.loadDashboard(),
+                      );
                     },
                     child: Text(
                       'Try Again',
@@ -170,10 +159,7 @@ class _ErrorView extends StatelessWidget {
         // Show last data if available
         if (lastDashboard != null)
           SliverToBoxAdapter(
-            child: _LoadedView(
-              dashboard: lastDashboard!,
-              isRefreshing: false,
-            ),
+            child: _LoadedView(dashboard: lastDashboard!, isRefreshing: false),
           ),
       ],
     );
@@ -196,10 +182,7 @@ class _LoadedView extends StatelessWidget {
       slivers: [
         // Header
         SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: _buildHeader(),
-          ),
+          child: Padding(padding: EdgeInsets.all(16.w), child: _buildHeader()),
         ),
 
         // Upcoming Meeting
@@ -224,9 +207,7 @@ class _LoadedView extends StatelessWidget {
         SliverToBoxAdapter(child: SizedBox(height: 16.h)),
 
         // Metrics Cards
-        SliverToBoxAdapter(
-          child: _buildMetricsGrid(),
-        ),
+        SliverToBoxAdapter(child: _buildMetricsGrid()),
 
         SliverToBoxAdapter(child: SizedBox(height: 16.h)),
 
@@ -241,9 +222,7 @@ class _LoadedView extends StatelessWidget {
         SliverToBoxAdapter(child: SizedBox(height: 16.h)),
 
         // Fire & Rocks Section
-        SliverToBoxAdapter(
-          child: _buildFireRocksSection(),
-        ),
+        SliverToBoxAdapter(child: _buildFireRocksSection()),
 
         SliverToBoxAdapter(child: SizedBox(height: 100.h)),
       ],
@@ -384,14 +363,13 @@ class _LoadedView extends StatelessWidget {
                   // Navigate to all todos
                 },
                 child: Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 6.h,
+                  ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.r),
-                    border: Border.all(
-                      color: AppColors.glassBorder,
-                      width: 1,
-                    ),
+                    border: Border.all(color: AppColors.glassBorder, width: 1),
                     gradient: LinearGradient(
                       colors: [
                         Colors.white.withOpacity(0.2),
@@ -413,46 +391,20 @@ class _LoadedView extends StatelessWidget {
           ),
           SizedBox(height: 20.h),
 
-          // Chart Section with enhanced glass effect
-          Container(
-            padding: EdgeInsets.all(16.w),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.r),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withOpacity(0.25),
-                  Colors.white.withOpacity(0.1),
-                  Colors.white.withOpacity(0.05),
-                ],
-              ),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.3),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 20,
-                  offset: const Offset(0, 8),
-                ),
-              ],
-            ),
-            child: MobilePieChart(
-              data: _getTodoChartData(),
-            ),
-          ),
+          // Chart Section
+          MobilePieChart(data: _getTodoChartData()),
 
           SizedBox(height: 20.h),
 
           // Todo List with enhanced cards
           ...dashboard.todos
               .take(3)
-              .map((todo) => Padding(
-                    padding: EdgeInsets.only(bottom: 12.h),
-                    child: MobileTodoCard(todo: todo),
-                  ))
+              .map(
+                (todo) => Padding(
+                  padding: EdgeInsets.only(bottom: 12.h),
+                  child: MobileTodoCard(todo: todo),
+                ),
+              )
               .toList(),
         ],
       ),
@@ -462,17 +414,13 @@ class _LoadedView extends StatelessWidget {
   Widget _buildFireRocksSection() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: Row(
+      child: Column(
         children: [
           // Fire Section
-          Expanded(
-            child: _buildFireCard(),
-          ),
-          SizedBox(width: 12.w),
+          _buildFireCard(),
+          SizedBox(height: 16.h),
           // Rocks Section
-          Expanded(
-            child: _buildRocksCard(),
-          ),
+          _buildRocksCard(),
         ],
       ),
     );
@@ -508,10 +456,7 @@ class _LoadedView extends StatelessWidget {
           SizedBox(height: 12.h),
           Text(
             'Pressing issues to resolve',
-            style: TextStyle(
-              fontSize: 10.sp,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 10.sp, color: AppColors.textSecondary),
           ),
           SizedBox(height: 16.h),
           Row(
@@ -598,10 +543,7 @@ class _LoadedView extends StatelessWidget {
           SizedBox(height: 12.h),
           Text(
             'Quarterly goals tracking',
-            style: TextStyle(
-              fontSize: 10.sp,
-              color: AppColors.textSecondary,
-            ),
+            style: TextStyle(fontSize: 10.sp, color: AppColors.textSecondary),
           ),
           SizedBox(height: 16.h),
           Row(
@@ -688,9 +630,5 @@ class PieChartData {
   final double value;
   final Color color;
 
-  PieChartData({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
+  PieChartData({required this.label, required this.value, required this.color});
 }

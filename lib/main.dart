@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:guestos/presentation/screens/login/loginscreen.dart';
 import 'core/injection/injection.dart';
 import 'core/constants/app_colors.dart';
 import 'presentation/screens/dashboard/mobile_dashboard_screen.dart';
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
             fontFamily: 'System',
             scaffoldBackgroundColor: AppColors.primaryDark,
           ),
-          home: const DashboardSelector(),
+          home: const LoginScreen(),
         );
       },
     );
@@ -81,8 +82,10 @@ class DashboardSelector extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryBlue,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 40.w, vertical: 16.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40.w,
+                      vertical: 16.h,
+                    ),
                   ),
                   child: Text(
                     'Mobile Dashboard',
@@ -104,8 +107,10 @@ class DashboardSelector extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryBlue,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 40.w, vertical: 16.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40.w,
+                      vertical: 16.h,
+                    ),
                   ),
                   child: Text(
                     'Tablet Dashboard',

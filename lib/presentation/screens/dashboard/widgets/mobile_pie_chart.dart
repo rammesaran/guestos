@@ -7,36 +7,79 @@ import '../mobile_dashboard_screen.dart';
 class MobilePieChart extends StatelessWidget {
   final List<PieChartData> data;
 
-  const MobilePieChart({
-    Key? key,
-    required this.data,
-  }) : super(key: key);
+  const MobilePieChart({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          width: 120.w,
-          height: 120.w,
-          child: fl_chart.PieChart(
-            fl_chart.PieChartData(
-              sections: _buildPieChartSections(),
-              centerSpaceRadius: 30.w,
-              sectionsSpace: 2,
+    return Container(
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.r),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withOpacity(0.4),
+            Colors.white.withOpacity(0.2),
+            Colors.white.withOpacity(0.05),
+          ],
+        ),
+        border: Border.all(color: Colors.white.withOpacity(0.4), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 25,
+            offset: const Offset(0, 10),
+          ),
+          BoxShadow(
+            color: Colors.white.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 120.w,
+            height: 120.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.r),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withOpacity(0.3),
+                  Colors.white.withOpacity(0.1),
+                ],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 15,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: fl_chart.PieChart(
+              fl_chart.PieChartData(
+                sections: _buildPieChartSections(),
+                centerSpaceRadius: 30.w,
+                sectionsSpace: 2,
+              ),
             ),
           ),
-        ),
-        SizedBox(width: 20.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...data.map((item) => _buildLegendItem(item)).toList(),
-            ],
+          SizedBox(width: 20.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...data.map((item) => _buildLegendItem(item)).toList(),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -76,10 +119,7 @@ class MobilePieChart extends StatelessWidget {
           Expanded(
             child: Text(
               item.label,
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: AppColors.textSecondary,
-              ),
+              style: TextStyle(fontSize: 12.sp, color: AppColors.textSecondary),
             ),
           ),
           Text(
