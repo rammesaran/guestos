@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Toggle Authentication Mode
                     if (widget.showOtpLogin) ...[
                       SizedBox(height: isTablet ? 30 : 20),
-                      _buildToggleButton(),
+                      //_buildToggleButton(),
                     ],
                   ],
                 ),

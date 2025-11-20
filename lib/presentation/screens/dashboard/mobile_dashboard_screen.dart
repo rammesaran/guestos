@@ -43,6 +43,8 @@ class _MobileDashboardViewState extends State<_MobileDashboardView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+
       extendBodyBehindAppBar: true,
       body: Container(
         decoration: const BoxDecoration(
@@ -209,8 +211,7 @@ class _LoadedView extends StatelessWidget {
         SliverToBoxAdapter(child: SizedBox(height: 16.h)),
 
         // Metrics Cards
-        SliverToBoxAdapter(child: _buildMetricsGrid()),
-
+        //SliverToBoxAdapter(child: _buildMetricsGrid()),
         SliverToBoxAdapter(child: SizedBox(height: 16.h)),
 
         // Todo Section

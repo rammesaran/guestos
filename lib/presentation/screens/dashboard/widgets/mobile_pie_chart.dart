@@ -92,12 +92,20 @@ class MobilePieChart extends StatelessWidget {
         color: item.color,
         value: item.value,
         title: '${percentage.toInt()}%',
-        radius: 35.w,
+        radius: 40.w,
         titleStyle: TextStyle(
-          fontSize: 10.sp,
+          fontSize: 12.sp,
           fontWeight: FontWeight.bold,
-          color: AppColors.textPrimary,
+          color: Colors.white,
+          shadows: [
+            Shadow(
+              blurRadius: 2.0,
+              color: Colors.black.withOpacity(0.6),
+              offset: const Offset(1.0, 1.0),
+            ),
+          ],
         ),
+        titlePositionPercentageOffset: 0.6,
       );
     }).toList();
   }
