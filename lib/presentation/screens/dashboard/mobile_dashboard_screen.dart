@@ -13,6 +13,7 @@ import 'widgets/mobile_meeting_card.dart';
 import 'widgets/mobile_overview_card.dart';
 import 'widgets/mobile_todo_card.dart';
 import 'widgets/mobile_pie_chart.dart';
+import 'widgets/todo_glass_widget.dart';
 import 'bottomnavigation.dart';
 
 class MobileDashboardScreen extends StatelessWidget {
@@ -335,80 +336,7 @@ class _LoadedView extends StatelessWidget {
   }
 
   Widget _buildTodoSection() {
-    return GlassContainer(
-      borderRadius: BorderRadius.circular(24.r),
-      padding: EdgeInsets.all(20.w),
-      blurIntensity: 15.0,
-      gradientColors: [
-        Colors.white.withOpacity(0.3),
-        Colors.white.withOpacity(0.15),
-        Colors.white.withOpacity(0.05),
-      ],
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'To-Do',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // Navigate to all todos
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 6.h,
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.r),
-                    border: Border.all(color: AppColors.glassBorder, width: 1),
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.white.withOpacity(0.2),
-                        Colors.white.withOpacity(0.1),
-                      ],
-                    ),
-                  ),
-                  child: Text(
-                    'View All To-Do',
-                    style: TextStyle(
-                      fontSize: 11.sp,
-                      color: AppColors.textSecondary,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 20.h),
-
-          // Chart Section
-          MobilePieChart(data: _getTodoChartData()),
-
-          SizedBox(height: 20.h),
-
-          // Todo List with enhanced cards
-          ...dashboard.todos
-              .take(3)
-              .map(
-                (todo) => Padding(
-                  padding: EdgeInsets.only(bottom: 12.h),
-                  child: MobileTodoCard(todo: todo),
-                ),
-              )
-              .toList(),
-        ],
-      ),
-    );
+    return const TodoGlassWidget();
   }
 
   Widget _buildFireRocksSection() {
