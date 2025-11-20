@@ -1,205 +1,201 @@
 import 'package:flutter/material.dart';
+import 'package:guestos/presentation/screens/dashboard/dashboarddata.dart';
 import 'dart:math' as math;
-import 'dart:ui';
 
-class TodoGlassWidget extends StatelessWidget {
-  const TodoGlassWidget({Key? key}) : super(key: key);
+class TodoChartCard extends StatelessWidget {
+  final int completed;
+  final int inProgress;
+  final int yetToStart;
+  final List<TodoItem> pendingTodos;
+  final VoidCallback? onViewAll;
+  final Function(String)? onTodoTap;
+  final VoidCallback? onViewDetails;
+
+  const TodoChartCard({
+    Key? key,
+    required this.completed,
+    required this.inProgress,
+    required this.yetToStart,
+    required this.pendingTodos,
+    this.onViewAll,
+    this.onTodoTap,
+    this.onViewDetails,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 20,
-            spreadRadius: 5,
-          ),
-        ],
+        color: Colors.white.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withOpacity(0.2),
-                  Colors.white.withOpacity(0.1),
-                ],
+      child: Column(
+        children: [
+          // Header
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'To-Do',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              GestureDetector(
+                onTap: onViewAll,
+                child: Row(
                   children: [
-                    const Text(
-                      'To-Do',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+                    Icon(
+                      Icons.visibility_outlined,
+                      color: Colors.white.withOpacity(0.9),
+                      size: 18,
                     ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.visibility_outlined,
-                          color: Colors.white.withOpacity(0.9),
-                          size: 24,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          'View All To-Do',
-                          style: TextStyle(
-                            fontSize: 17,
-                            color: Colors.white.withOpacity(0.9),
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 40),
-
-                // Pie Chart and Legend
-                Row(
-                  children: [
-                    // Pie Chart
-                    SizedBox(
-                      width: 250,
-                      height: 250,
-                      child: CustomPaint(painter: PieChartPainter()),
-                    ),
-                    const SizedBox(width: 50),
-
-                    // Legend
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildLegendItem(Colors.green, 'Completed', false),
-                          const SizedBox(height: 25),
-                          _buildLegendItem(Colors.orange, 'In Progress', true),
-                          const SizedBox(height: 25),
-                          _buildLegendItem(
-                            const Color(0xFF4DBFDB),
-                            'Yet to Start',
-                            false,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 40),
-
-                // Pending To-Do's Section
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Pending To-Do',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
-                    ),
+                    const SizedBox(width: 6),
                     Text(
-                      'View Details',
+                      'View All To-Do',
                       style: TextStyle(
-                        fontSize: 17,
                         color: Colors.white.withOpacity(0.9),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
                         decoration: TextDecoration.underline,
-                        decorationColor: Colors.white.withOpacity(0.9),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-
-                // Todo Items
-                _buildTodoItem('ABD Assessm...', 'Sep 30'),
-                const SizedBox(height: 16),
-                _buildTodoItem('ABD Assessm...', 'Sep 30'),
-                const SizedBox(height: 16),
-                _buildTodoItem('ABD Assessm...', 'Sep 30'),
-              ],
-            ),
+              ),
+            ],
           ),
-        ),
+          const SizedBox(height: 24),
+
+          // Pie Chart and Legend
+          Row(
+            children: [
+              // Pie Chart
+              SizedBox(
+                width: 180,
+                height: 180,
+                child: CustomPaint(
+                  painter: PieChartPainter(
+                    completed: completed,
+                    inProgress: inProgress,
+                    yetToStart: yetToStart,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 24),
+
+              // Legend
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildLegendItem(
+                      'Completed',
+                      const Color(0xFF8BC34A),
+                      completed,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildLegendItem(
+                      'In Progress',
+                      const Color(0xFFFFA726),
+                      inProgress,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildLegendItem(
+                      'Yet to Start',
+                      const Color(0xFF4FC3F7),
+                      yetToStart,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // Pending To-Do's Section
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Pending To-Do\'s',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.95),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              GestureDetector(
+                onTap: onViewDetails,
+                child: Text(
+                  'View Details',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.9),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Todo List
+          ...pendingTodos.map((todo) => _buildTodoItem(todo)).toList(),
+        ],
       ),
     );
   }
 
-  Widget _buildLegendItem(Color color, String label, bool hasButton) {
+  Widget _buildLegendItem(String label, Color color, int count) {
+    final total = completed + inProgress + yetToStart;
+    final percentage = total > 0 ? (count / total * 100).round() : 0;
+
     return Row(
       children: [
         Container(
-          width: 20,
-          height: 20,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(5),
-          ),
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
-        const SizedBox(width: 12),
-        if (hasButton)
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: Colors.orange,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.orange.withOpacity(0.3),
-                  blurRadius: 8,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: const Icon(Icons.add, color: Colors.white, size: 20),
-          ),
-        if (hasButton) const SizedBox(width: 12),
+        const SizedBox(width: 8),
         Expanded(
           child: Text(
             label,
-            style: const TextStyle(
-              fontSize: 18,
-              color: Colors.white,
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.9),
+              fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
-            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        Text(
+          '$percentage%',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildTodoItem(String title, String dueDate) {
+  Widget _buildTodoItem(TodoItem todo) {
     return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        color: Colors.white.withOpacity(0.15),
-        border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.15), width: 1),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
             child: Column(
@@ -208,54 +204,53 @@ class TodoGlassWidget extends StatelessWidget {
                 Text(
                   'Title',
                   style: TextStyle(
-                    fontSize: 14,
                     color: Colors.white.withOpacity(0.7),
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
+                    fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  todo.title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
-          Row(
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Due by',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white.withOpacity(0.7),
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    dueDate,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
+              Text(
+                'Due by',
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.7),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-              const SizedBox(width: 20),
-              Icon(
-                Icons.arrow_forward,
-                color: Colors.white.withOpacity(0.7),
-                size: 24,
+              const SizedBox(height: 2),
+              Text(
+                todo.dueDate,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
+          ),
+          const SizedBox(width: 8),
+          Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.white.withOpacity(0.7),
+            size: 16,
           ),
         ],
       ),
@@ -264,155 +259,79 @@ class TodoGlassWidget extends StatelessWidget {
 }
 
 class PieChartPainter extends CustomPainter {
+  final int completed;
+  final int inProgress;
+  final int yetToStart;
+
+  PieChartPainter({
+    required this.completed,
+    required this.inProgress,
+    required this.yetToStart,
+  });
+
   @override
   void paint(Canvas canvas, Size size) {
+    final total = completed + inProgress + yetToStart;
+    if (total == 0) return;
+
     final center = Offset(size.width / 2, size.height / 2);
-    final radius = math.min(size.width, size.height) / 2;
+    final radius = size.width / 2;
 
-    // Define the data
-    final completed = 0.60; // 60%
-    final inProgress = 0.35; // 35%
-    final yetToStart = 0.05; // 5%
+    double startAngle = -math.pi / 2; // Start from top
 
-    // Colors
-    final completedColor = Colors.green;
-    final inProgressColor = Colors.orange;
-    final yetToStartColor = const Color(0xFF4DBFDB);
+    // Completed (Green)
+    if (completed > 0) {
+      final sweepAngle = (completed / total) * 2 * math.pi;
+      final paint = Paint()
+        ..color = const Color(0xFF8BC34A)
+        ..style = PaintingStyle.fill;
 
-    // Shadow for 3D effect
-    final shadowPaint = Paint()
-      ..color = Colors.black.withOpacity(0.3)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        startAngle,
+        sweepAngle,
+        true,
+        paint,
+      );
 
-    canvas.drawCircle(
-      Offset(center.dx + 3, center.dy + 6),
-      radius,
-      shadowPaint,
-    );
+      startAngle += sweepAngle;
+    }
 
-    // Calculate angles (starting from top, going clockwise)
-    double startAngle = -math.pi / 2;
+    // In Progress (Orange)
+    if (inProgress > 0) {
+      final sweepAngle = (inProgress / total) * 2 * math.pi;
+      final paint = Paint()
+        ..color = const Color(0xFFFFA726)
+        ..style = PaintingStyle.fill;
 
-    // Draw Completed (Green) - 60% - starts from top
-    final completedPaint = Paint()
-      ..color = completedColor
-      ..style = PaintingStyle.fill;
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        startAngle,
+        sweepAngle,
+        true,
+        paint,
+      );
 
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      2 * math.pi * completed,
-      true,
-      completedPaint,
-    );
+      startAngle += sweepAngle;
+    }
 
-    // Add gradient overlay for completed section
-    final completedGradient = Paint()
-      ..shader = RadialGradient(
-        colors: [completedColor.withOpacity(0.8), completedColor],
-        stops: const [0.5, 1.0],
-      ).createShader(Rect.fromCircle(center: center, radius: radius))
-      ..blendMode = BlendMode.overlay;
+    // Yet to Start (Blue)
+    if (yetToStart > 0) {
+      final sweepAngle = (yetToStart / total) * 2 * math.pi;
+      final paint = Paint()
+        ..color = const Color(0xFF4FC3F7)
+        ..style = PaintingStyle.fill;
 
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      2 * math.pi * completed,
-      true,
-      completedGradient,
-    );
-
-    startAngle += 2 * math.pi * completed;
-
-    // Draw In Progress (Orange) - 35%
-    final inProgressPaint = Paint()
-      ..color = inProgressColor
-      ..style = PaintingStyle.fill;
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      2 * math.pi * inProgress,
-      true,
-      inProgressPaint,
-    );
-
-    // Add gradient overlay for in progress section
-    final inProgressGradient = Paint()
-      ..shader = RadialGradient(
-        colors: [inProgressColor.withOpacity(0.8), inProgressColor],
-        stops: const [0.5, 1.0],
-      ).createShader(Rect.fromCircle(center: center, radius: radius))
-      ..blendMode = BlendMode.overlay;
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      2 * math.pi * inProgress,
-      true,
-      inProgressGradient,
-    );
-
-    startAngle += 2 * math.pi * inProgress;
-
-    // Draw Yet to Start (Blue) - 5%
-    final yetToStartPaint = Paint()
-      ..color = yetToStartColor
-      ..style = PaintingStyle.fill;
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      2 * math.pi * yetToStart,
-      true,
-      yetToStartPaint,
-    );
-
-    // Add gradient overlay for yet to start section
-    final yetToStartGradient = Paint()
-      ..shader = RadialGradient(
-        colors: [yetToStartColor.withOpacity(0.8), yetToStartColor],
-        stops: const [0.5, 1.0],
-      ).createShader(Rect.fromCircle(center: center, radius: radius))
-      ..blendMode = BlendMode.overlay;
-
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      2 * math.pi * yetToStart,
-      true,
-      yetToStartGradient,
-    );
-
-    // Draw percentage texts
-    _drawText(canvas, '60%', center.dx - 30, center.dy + 50, Colors.white, 28);
-    _drawText(canvas, '35%', center.dx + 10, center.dy - 45, Colors.white, 24);
-    _drawText(canvas, '5%', center.dx + 45, center.dy + 10, Colors.white, 18);
-  }
-
-  void _drawText(
-    Canvas canvas,
-    String text,
-    double x,
-    double y,
-    Color color,
-    double fontSize,
-  ) {
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: TextStyle(
-          color: color,
-          fontSize: fontSize,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      textDirection: TextDirection.ltr,
-    );
-    textPainter.layout();
-    textPainter.paint(canvas, Offset(x, y));
+      canvas.drawArc(
+        Rect.fromCircle(center: center, radius: radius),
+        startAngle,
+        sweepAngle,
+        true,
+        paint,
+      );
+    }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

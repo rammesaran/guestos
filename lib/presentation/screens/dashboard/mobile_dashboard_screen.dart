@@ -15,6 +15,7 @@ import 'widgets/mobile_todo_card.dart';
 import 'widgets/mobile_pie_chart.dart';
 import 'widgets/todo_glass_widget.dart';
 import 'bottomnavigation.dart';
+import 'dashboarddata.dart';
 
 class MobileDashboardScreen extends StatelessWidget {
   const MobileDashboardScreen({Key? key}) : super(key: key);
@@ -336,7 +337,40 @@ class _LoadedView extends StatelessWidget {
   }
 
   Widget _buildTodoSection() {
-    return const TodoGlassWidget();
+    // Extract todo counts from dashboard entity
+    final completedCount = dashboard.todos.where((t) => t.isCompleted).length;
+    final totalCount = dashboard.todos.length;
+    final inProgressCount = ((totalCount - completedCount) * 0.6).round();
+    final yetToStartCount = totalCount - completedCount - inProgressCount;
+
+    // Convert todos to expected format
+    final pendingTodos = dashboard.todos
+        .where((t) => !t.isCompleted)
+        .take(3)
+        .map(
+          (t) => TodoItem(
+            id: t.id,
+            title: t.title,
+            dueDate: t.date, // Use date property from TodoEntity
+          ),
+        )
+        .toList();
+
+    return TodoChartCard(
+      completed: completedCount,
+      inProgress: inProgressCount,
+      yetToStart: yetToStartCount,
+      pendingTodos: pendingTodos,
+      onViewAll: () {
+        // TODO: Implement view all todos
+      },
+      onTodoTap: (todoId) {
+        // TODO: Implement todo tap
+      },
+      onViewDetails: () {
+        // TODO: Implement view details
+      },
+    );
   }
 
   Widget _buildFireRocksSection() {

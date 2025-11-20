@@ -4,7 +4,6 @@ import 'package:guestos/presentation/screens/dashboard/dashboarddata.dart';
 import 'package:guestos/presentation/screens/dashboard/matriccard.dart';
 import 'package:guestos/presentation/screens/dashboard/meetingcard.dart';
 import 'package:guestos/presentation/screens/dashboard/overview.dart';
-import 'package:guestos/presentation/screens/dashboard/todochart.dart';
 import 'package:guestos/presentation/screens/dashboard/widgets/todo_glass_widget.dart';
 
 /// Main Dashboard Home Screen
@@ -78,8 +77,16 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // To-Do Glass Widget
-                    const TodoGlassWidget(),
+                    // To-Do Chart Card
+                    TodoChartCard(
+                      completed: widget.data.todoCompleted,
+                      inProgress: widget.data.todoInProgress,
+                      yetToStart: widget.data.todoYetToStart,
+                      pendingTodos: widget.data.pendingTodos,
+                      onViewAll: widget.onViewAllTodos,
+                      onTodoTap: widget.onTodoTap,
+                      onViewDetails: widget.onViewTodoDetails,
+                    ),
                     const SizedBox(height: 16),
 
                     // Fire Metric Card
